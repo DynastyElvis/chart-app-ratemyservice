@@ -1,0 +1,52 @@
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import DataService from '../services/api'
+
+export const useDataStore = defineStore('data', () => {
+  const dataItems = ref([])
+  const loading = ref(false)
+  const error = ref(null)
+
+  const fetchData = async () => {
+    try {
+      loading.value = true
+      dataItems.value = await DataService.getData()
+    } catch (err) {
+      error.value = err.message
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const addData = async (item) => {
+    try {
+      const newItem = await DataService.addData(item)
+      dataItems.value.push(newItem)
+    } catch (err) {
+      error.value = err.message
+    }
+  }
+
+  const updateData = async (id, updates) => {
+    try {
+      const updatedItem = await DataService.updateData(id, updates)
+      const index = dataItems.value.findIndex(item => item.id === id)
+      if (index !== -1) {
+        dataItems.value[index] = updatedItem
+      }
+    } catch (err) {
+      error.value = err.message
+    }
+  }
+
+  const deleteData = async (id) => {
+    try {
+      await DataService.deleteData(id)
+      dataItems.value = dataItems.value.filter(item => item.id !== id)
+    } catch (err) {
+      error.value = err.message
+    }
+  }
+
+  return { dataItems, loading, error, fetchData, addData, updateData, deleteData }
+})
