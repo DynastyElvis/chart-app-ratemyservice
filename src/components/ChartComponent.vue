@@ -1,13 +1,11 @@
 <template>
-  <div>
+  <div class="chart-container mt-4 p-3 border rounded">
     <highcharts :options="chartOptions"></highcharts>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import Highcharts from 'highcharts'
-import { Chart } from 'highcharts-vue'
 
 const props = defineProps({
   data: {
@@ -44,3 +42,9 @@ watch(() => props.data, (newData) => {
   }))
 }, { immediate: true })
 </script>
+
+<style scoped>
+.chart-container {
+  background: white;
+}
+</style>
